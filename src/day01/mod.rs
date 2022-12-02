@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io;
-use std::io::{BufRead, BufReader, Read};
+use std::io::Read;
 
 pub fn solve() -> io::Result<(u32, u32)> {
     let mut file = File::open("src/day01/input")?;
