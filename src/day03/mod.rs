@@ -72,17 +72,19 @@ pub fn solve_2(lines: &Vec<String>) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::common::map_lines_to_strings;
     use super::*;
+    use crate::common::map_lines_to_strings;
 
     #[test]
     fn it_works_simple() {
-        let vec = vec![String::from("vJrwpWtwJgWrhcsFMMfFFhFp"),
-                       String::from("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"),
-                       String::from("PmmdzqPrVvPwwTWBwg"),
-                       String::from("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"),
-                       String::from("ttgJtRGJQctTZtZT"),
-                       String::from("CrZsJsPPZsGzwwsLwLmpwMDw")];
+        let vec = vec![
+            String::from("vJrwpWtwJgWrhcsFMMfFFhFp"),
+            String::from("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"),
+            String::from("PmmdzqPrVvPwwTWBwg"),
+            String::from("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"),
+            String::from("ttgJtRGJQctTZtZT"),
+            String::from("CrZsJsPPZsGzwwsLwLmpwMDw"),
+        ];
 
         let sum1 = solve(&vec);
 
@@ -91,12 +93,14 @@ mod tests {
 
     #[test]
     fn it_works_simple_p2() {
-        let vec = vec![String::from("vJrwpWtwJgWrhcsFMMfFFhFp"),
-                       String::from("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"),
-                       String::from("PmmdzqPrVvPwwTWBwg"),
-                       String::from("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"),
-                       String::from("ttgJtRGJQctTZtZT"),
-                       String::from("CrZsJsPPZsGzwwsLwLmpwMDw")];
+        let vec = vec![
+            String::from("vJrwpWtwJgWrhcsFMMfFFhFp"),
+            String::from("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"),
+            String::from("PmmdzqPrVvPwwTWBwg"),
+            String::from("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"),
+            String::from("ttgJtRGJQctTZtZT"),
+            String::from("CrZsJsPPZsGzwwsLwLmpwMDw"),
+        ];
 
         let sum1 = solve_2(&vec);
 
@@ -110,7 +114,6 @@ mod tests {
 
         assert_eq!(p1, 7850);
     }
-
 
     #[test]
     fn it_works_p2() {

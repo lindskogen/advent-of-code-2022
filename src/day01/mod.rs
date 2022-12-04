@@ -1,10 +1,13 @@
 use crate::common::read_file_to_string;
 
 pub fn solve() -> (u32, u32) {
-
     let result_string = read_file_to_string("src/day01/input");
 
-    let mut groups: Vec<u32> = result_string.trim_end().split("\n\n").map(|a| a.split("\n").map(|b| b.parse::<u32>().unwrap()).sum()).collect();
+    let mut groups: Vec<u32> = result_string
+        .trim_end()
+        .split("\n\n")
+        .map(|a| a.split("\n").map(|b| b.parse::<u32>().unwrap()).sum())
+        .collect();
 
     groups.sort_by(|a, b| b.cmp(a));
 
