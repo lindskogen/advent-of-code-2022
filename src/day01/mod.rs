@@ -6,7 +6,7 @@ pub fn solve() -> (u32, u32) {
     let mut groups: Vec<u32> = result_string
         .trim_end()
         .split("\n\n")
-        .map(|a| a.split("\n").map(|b| b.parse::<u32>().unwrap()).sum())
+        .map(|a| a.lines().flat_map(|b| b.parse::<u32>().ok()).sum())
         .collect();
 
     groups.sort_by(|a, b| b.cmp(a));
