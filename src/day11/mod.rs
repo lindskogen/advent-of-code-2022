@@ -148,8 +148,6 @@ pub fn solve(input: &str, is_part_2: bool) -> u64 {
     inspections.iter().rev().take(2).product()
 }
 
-pub fn solve_2(_input: &str) {}
-
 #[cfg(test)]
 mod tests {
     use crate::common::read_file_to_string;
