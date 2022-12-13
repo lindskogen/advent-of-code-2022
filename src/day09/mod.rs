@@ -105,9 +105,7 @@ pub fn solve_2(input: &str) -> usize {
         for x in -11..15 {
             if (x, y) == h {
                 print!("H")
-            } else if let Some((index, _)) =
-                tails.iter().enumerate().find(|&(index, &p)| (x, y) == p)
-            {
+            } else if let Some((index, _)) = tails.iter().enumerate().find(|&(_, &p)| (x, y) == p) {
                 print!("{}", index + 1)
             } else {
                 print!(".")

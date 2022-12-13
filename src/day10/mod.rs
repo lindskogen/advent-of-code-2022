@@ -261,9 +261,7 @@ addx -11
 noop
 noop
 noop";
-        let p2 = solve_2(simple);
-
-        // assert_eq!(p2, 13140);
+        solve_2(simple);
     }
 
     #[test]
