@@ -86,24 +86,19 @@ fn parse(input: &str) -> (Package, Package) {
 
 fn is_vec_in_right_order(v1: &Vec<Package>, v2: &Vec<Package>) -> Ordering {
     let max_len = (v1.len()).max(v2.len());
-    let mut last_ordering = Ordering::Equal;
     for i in 0..max_len {
         let ordering = match (v1.get(i), v2.get(i)) {
             (Some(x), Some(y)) => x.cmp(y),
             (Some(_), None) => Ordering::Greater,
             (None, Some(_)) => Ordering::Less,
-
-            _ => last_ordering,
+            _ => Ordering::Equal,
         };
 
         if ordering != Ordering::Equal {
             return ordering;
         }
-
-        last_ordering = ordering;
     }
-
-    return last_ordering;
+    return Ordering::Equal;
 }
 
 pub fn solve(input: &str) -> usize {
