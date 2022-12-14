@@ -8,6 +8,23 @@ enum Package {
     Num(u32),
 }
 
+impl PartialOrd<Self> for Package {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Package {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match (self, other) {
+            (List(v1), List(v2)) => is_vec_in_right_order(v1, v2),
+            (i @ List(_), Num(y)) => i.cmp(&List(vec![Num(*y)])),
+            (Num(x), j @ List(_)) => List(vec![Num(*x)]).cmp(j),
+            (Num(x), Num(y)) => x.cmp(y),
+        }
+    }
+}
+
 fn parse_line(input: &str) -> (Package, usize) {
     let mut vec = vec![];
 
@@ -72,7 +89,7 @@ fn is_vec_in_right_order(v1: &Vec<Package>, v2: &Vec<Package>) -> Ordering {
     let mut last_ordering = Ordering::Equal;
     for i in 0..max_len {
         let ordering = match (v1.get(i), v2.get(i)) {
-            (Some(x), Some(y)) => is_in_right_order(x, y),
+            (Some(x), Some(y)) => x.cmp(y),
             (Some(_), None) => Ordering::Greater,
             (None, Some(_)) => Ordering::Less,
 
@@ -89,15 +106,6 @@ fn is_vec_in_right_order(v1: &Vec<Package>, v2: &Vec<Package>) -> Ordering {
     return last_ordering;
 }
 
-fn is_in_right_order(p1: &Package, p2: &Package) -> Ordering {
-    match (p1, p2) {
-        (List(v1), List(v2)) => is_vec_in_right_order(v1, v2),
-        (i @ List(_), Num(y)) => is_in_right_order(i, &List(vec![Num(*y)])),
-        (Num(x), j @ List(_)) => is_in_right_order(&List(vec![Num(*x)]), j),
-        (Num(x), Num(y)) => x.cmp(y),
-    }
-}
-
 pub fn solve(input: &str) -> usize {
     input
         .split("\n\n")
@@ -105,7 +113,7 @@ pub fn solve(input: &str) -> usize {
         .filter_map(|(index, pairs)| {
             let (p1, p2) = parse(pairs);
 
-            if is_in_right_order(&p1, &p2) == Ordering::Less {
+            if p1 < p2 {
                 Some(index + 1)
             } else {
                 None
@@ -126,7 +134,7 @@ pub fn solve_2(input: &str) -> usize {
         .chain(iter::once(List(vec![Num(6)])))
         .collect();
 
-    packages.sort_by(is_in_right_order);
+    packages.sort();
 
     packages
         .iter()
