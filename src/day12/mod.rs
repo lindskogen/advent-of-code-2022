@@ -27,24 +27,23 @@ impl Ord for State {
     }
 }
 
-fn get_neighs(adj_list: &Vec<Vec<usize>>, (x, y): Position) -> Vec<Position> {
+const POS_DELTAS: [(isize, isize); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)];
+
+fn get_neighs(adj_list: &Vec<Vec<usize>>, (x, y): Position) -> impl Iterator<Item = Position> + '_ {
     let my_height = adj_list[y][x];
 
-    vec![(0, 1), (0, -1), (1, 0), (-1, 0)]
-        .iter()
-        .filter_map(|(dx, dy)| {
-            let x = (x as isize + dx) as usize;
-            let y = (y as isize + dy) as usize;
+    POS_DELTAS.iter().filter_map(move |(dx, dy)| {
+        let x = (x as isize + dx) as usize;
+        let y = (y as isize + dy) as usize;
 
-            adj_list.get(y).and_then(|row| row.get(x)).and_then(|n| {
-                if &my_height - 1 <= *n {
-                    Some((x, y))
-                } else {
-                    None
-                }
-            })
+        adj_list.get(y).and_then(|row| row.get(x)).and_then(|n| {
+            if &my_height - 1 <= *n {
+                Some((x, y))
+            } else {
+                None
+            }
         })
-        .collect()
+    })
 }
 
 fn shortest_path<F>(adj_list: &Vec<Vec<usize>>, start: Position, is_goal: F) -> Option<usize>
