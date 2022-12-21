@@ -75,7 +75,7 @@ fn parse_num_from_slice(input: &str, start_index: usize, index: usize) -> u32 {
 }
 
 fn parse(input: &str) -> (Package, Package) {
-    let (p1, p2) = input.split_once("\n").unwrap();
+    let (p1, p2) = input.split_once('\n').unwrap();
 
     let (vec1, _) = parse_line(p1);
 

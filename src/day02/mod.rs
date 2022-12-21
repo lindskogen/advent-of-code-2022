@@ -1,4 +1,4 @@
-pub fn solve(lines: &Vec<String>) -> (u32, u32) {
+pub fn solve(lines: &[String]) -> (u32, u32) {
     let score1 = lines.iter().fold(0, |acc, line| {
         acc + match line.as_str() {
             "C X" => 6 + 1,

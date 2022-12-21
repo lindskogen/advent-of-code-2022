@@ -18,7 +18,7 @@ fn parse_state(state: &str) -> Vec<Vec<char>> {
     state
 }
 
-pub fn solve(input: &String, is_part_2: bool) -> Option<String> {
+pub fn solve(input: &str, is_part_2: bool) -> Option<String> {
     let (state, instrs) = input.split_once("\n\n").expect("No double newline found");
 
     let mut state = parse_state(state);

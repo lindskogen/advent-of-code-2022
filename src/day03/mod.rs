@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-pub fn solve(lines: &Vec<String>) -> u32 {
+pub fn solve(lines: &[String]) -> u32 {
     let mut score = 0u32;
     for line in lines {
         let mut s1 = HashSet::new();
@@ -32,7 +32,7 @@ pub fn solve(lines: &Vec<String>) -> u32 {
     return score;
 }
 
-pub fn solve_2(lines: &Vec<String>) -> u32 {
+pub fn solve_2(lines: &[String]) -> u32 {
     let mut score = 0u32;
 
     for line in lines.chunks(3) {

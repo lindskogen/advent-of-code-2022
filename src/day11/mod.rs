@@ -36,7 +36,7 @@ fn parse(input: &str) -> (Vec<Monkey>, Vec<Vec<usize>>) {
             let monkey_id: usize = lines
                 .next()
                 .unwrap()
-                .split_once(" ")
+                .split_once(' ')
                 .unwrap()
                 .1
                 .trim_end_matches(':')
@@ -45,10 +45,10 @@ fn parse(input: &str) -> (Vec<Monkey>, Vec<Vec<usize>>) {
             let starting_items: Vec<_> = lines
                 .next()
                 .unwrap()
-                .split_once(":")
+                .split_once(':')
                 .unwrap()
                 .1
-                .split(",")
+                .split(',')
                 .map(|num| num.trim().parse::<usize>().unwrap())
                 .collect();
             let operation = parse_operation(lines.next().unwrap());
@@ -77,7 +77,7 @@ fn parse(input: &str) -> (Vec<Monkey>, Vec<Vec<usize>>) {
                 .parse()
                 .unwrap();
 
-            items.insert(monkey_id as usize, starting_items);
+            items.insert(monkey_id, starting_items);
 
             Monkey {
                 operation,
@@ -92,13 +92,7 @@ fn parse(input: &str) -> (Vec<Monkey>, Vec<Vec<usize>>) {
 }
 
 fn parse_operation(line: &str) -> Op {
-    let mut words = line
-        .split_once("=")
-        .unwrap()
-        .1
-        .trim()
-        .split_whitespace()
-        .skip(1);
+    let mut words = line.split_once('=').unwrap().1.split_whitespace().skip(1);
     let op = words.next().unwrap();
     let operand = words.next().unwrap();
 
@@ -137,7 +131,7 @@ pub fn solve(input: &str, is_part_2: bool) -> u64 {
                     m.if_false_id
                 };
 
-                items[next_id as usize].push(item);
+                items[next_id].push(item);
             }
             items[index].clear();
         }

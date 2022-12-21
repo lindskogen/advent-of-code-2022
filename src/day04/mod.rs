@@ -27,10 +27,10 @@ fn solve(lines: &Vec<String>) -> (u32, u32) {
     let mut part_2_score = 0u32;
     for line in lines {
         let pairs: Vec<_> = line
-            .split(",")
+            .split(',')
             .map(|range| {
                 let vec: Vec<_> = range
-                    .split("-")
+                    .split('-')
                     .map(|n| n.parse::<u32>().unwrap())
                     .collect();
 

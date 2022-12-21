@@ -27,12 +27,12 @@ fn parse_input(input: &str) -> HashMap<PathBuf, usize> {
     let mut cwd = PathBuf::new();
 
     for command_with_result in input.split('$').skip(1) {
-        let (command, result) = command_with_result.split_once("\n").unwrap();
+        let (command, result) = command_with_result.split_once('\n').unwrap();
 
         match command.trim() {
             "ls" => {
                 for line in result.lines() {
-                    let (size, name) = line.split_once(" ").unwrap();
+                    let (size, name) = line.split_once(' ').unwrap();
 
                     if size != "dir" {
                         let abs_path = cwd.join(name);
@@ -53,7 +53,7 @@ fn parse_input(input: &str) -> HashMap<PathBuf, usize> {
                 cwd.pop();
             }
             cd_dir => {
-                let (_, dir) = cd_dir.split_once(" ").unwrap();
+                let (_, dir) = cd_dir.split_once(' ').unwrap();
                 cwd.push(dir);
             }
         }

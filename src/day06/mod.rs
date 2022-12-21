@@ -21,7 +21,7 @@ pub const fn solve(input: &str, is_part_2: bool) -> Option<usize> {
     let mut i = 0usize;
 
     while i < input.len() {
-        if let Some(idx) = find_first_non_uniq(&input.as_bytes(), i, i + length) {
+        if let Some(idx) = find_first_non_uniq(input.as_bytes(), i, i + length) {
             i = idx + 1;
         } else {
             return Some(i + length);

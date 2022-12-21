@@ -14,7 +14,7 @@ fn parse(input: &str) -> Vec<Instruction> {
         .lines()
         .map(|l| {
             if l.len() > 4 {
-                let (_, arg) = l.split_once(" ").unwrap();
+                let (_, arg) = l.split_once(' ').unwrap();
 
                 Addx(arg.trim().parse().unwrap())
             } else {
@@ -102,16 +102,6 @@ mod tests {
     use test::Bencher;
 
     use super::*;
-
-    #[test]
-    fn it_works_simple() {
-        let simple = r"noop
-addx 3
-addx -5";
-        let p1 = solve_1(&simple);
-
-        assert_eq!(p1, 13);
-    }
 
     #[test]
     fn it_works_simple_with_large_input() {

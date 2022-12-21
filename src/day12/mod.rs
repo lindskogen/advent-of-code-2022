@@ -29,7 +29,7 @@ impl Ord for State {
 
 const POS_DELTAS: [(isize, isize); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)];
 
-fn get_neighs(adj_list: &Vec<Vec<usize>>, (x, y): Position) -> impl Iterator<Item = Position> + '_ {
+fn get_neighs(adj_list: &[Vec<usize>], (x, y): Position) -> impl Iterator<Item = Position> + '_ {
     let my_height = adj_list[y][x];
 
     POS_DELTAS.iter().filter_map(move |(dx, dy)| {
@@ -46,7 +46,7 @@ fn get_neighs(adj_list: &Vec<Vec<usize>>, (x, y): Position) -> impl Iterator<Ite
     })
 }
 
-fn shortest_path<F>(adj_list: &Vec<Vec<usize>>, start: Position, is_goal: F) -> Option<usize>
+fn shortest_path<F>(adj_list: &[Vec<usize>], start: Position, is_goal: F) -> Option<usize>
 where
     F: Fn(&Position) -> bool,
 {
@@ -83,7 +83,7 @@ where
 
         // For each node we can reach, see if we can find a way with
         // a lower cost going through this node
-        for pos in get_neighs(&adj_list, position) {
+        for pos in get_neighs(adj_list, position) {
             let next_cost = cost + 1;
 
             // If so, add it to the frontier and continue
@@ -135,17 +135,13 @@ fn parse(input: &str) -> (Vec<Vec<usize>>, Position, Position) {
 pub fn solve(input: &str) -> usize {
     let (grid, goal, start) = parse(input);
 
-    let path_len = shortest_path(&grid, start, |pos| pos == &goal).unwrap();
-
-    path_len
+    shortest_path(&grid, start, |pos| pos == &goal).unwrap()
 }
 
 pub fn solve_2(input: &str) -> usize {
     let (grid, _start, goal) = parse(input);
 
-    let path_len = shortest_path(&grid, goal, |&(x, y)| grid[y][x] == 'a' as usize).unwrap();
-
-    path_len
+    shortest_path(&grid, goal, |&(x, y)| grid[y][x] == 'a' as usize).unwrap()
 }
 
 #[cfg(test)]

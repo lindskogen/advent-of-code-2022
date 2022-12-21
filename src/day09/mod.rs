@@ -12,7 +12,7 @@ fn parse(input: &str) -> Vec<(&str, u32)> {
     input
         .lines()
         .map(|l| {
-            let (dir, steps) = l.split_once(" ").unwrap();
+            let (dir, steps) = l.split_once(' ').unwrap();
             (dir, steps.parse().unwrap())
         })
         .collect()
@@ -61,7 +61,7 @@ pub fn solve_1(input: &str) -> usize {
         println!()
     }
 
-    return set.len();
+    set.len()
 }
 
 pub fn solve_2(input: &str) -> usize {
@@ -90,7 +90,7 @@ pub fn solve_2(input: &str) -> usize {
             let mut p = h;
 
             for t in tails.iter_mut() {
-                if max_distance(&p, &t) > 1 {
+                if max_distance(&p, t) > 1 {
                     t.0 += (p.0 - t.0).signum();
                     t.1 += (p.1 - t.1).signum();
                 }
@@ -114,7 +114,7 @@ pub fn solve_2(input: &str) -> usize {
         println!()
     }
 
-    return set.len();
+    set.len()
 }
 
 #[cfg(test)]

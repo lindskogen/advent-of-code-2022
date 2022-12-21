@@ -166,7 +166,7 @@ mod tests {
         let lines = read_file_to_string("src/day14/input");
         b.iter(|| {
             let p1 = solve(lines.trim_end());
-            assert_eq!(p1, 6272);
+            assert_eq!(p1, 828);
         })
     }
     #[bench]
