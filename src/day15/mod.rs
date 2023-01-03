@@ -79,12 +79,10 @@ pub fn solve_2(input: &str, search_space: isize) -> u128 {
             let mut found = false;
             for s in &sensors {
                 if s.in_range(&(x, y)) {
-                    let k = (x - s.pos.0).signum() * (y - s.pos.1);
-
                     let dy = s.pos.1.abs_diff(y) as isize;
 
                     found = true;
-                    x = s.pos.0 + (k * dy + s.range as isize) + 1;
+                    x = s.pos.0 - dy + s.range as isize + 1;
                     break;
                 }
             }
