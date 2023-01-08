@@ -49,11 +49,11 @@ impl<'a> State<'a> {
         }
     }
 
-    fn key(&self, valve_indices: &HashMap<&str, u8>) -> usize {
-        self.opened_valves as usize * valve_indices.len() * 31 * 2
-            + valve_indices[self.position] as usize * 31 * 2
-            + self.time_left * 2
-            + self.number_others
+    fn key(&self, valve_indices: &HashMap<&str, u8>) -> u64 {
+        self.opened_valves * valve_indices.len() as u64 * 31 * 2
+            + valve_indices[self.position] as u64 * 31 * 2
+            + self.time_left as u64 * 2
+            + self.number_others as u64
     }
 }
 
@@ -106,7 +106,7 @@ impl<'a> Network<'a> {
 
 #[derive(Default)]
 struct Solution {
-    table: BTreeMap<usize, usize>,
+    table: BTreeMap<u64, usize>,
 }
 
 impl Solution {
