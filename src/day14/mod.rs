@@ -3,17 +3,6 @@ use std::collections::HashMap;
 enum Material {
     Rock,
     Sand,
-    Air,
-}
-
-impl Material {
-    fn debug(&self) -> char {
-        match self {
-            Material::Rock => '#',
-            Material::Sand => 'o',
-            Material::Air => ' ',
-        }
-    }
 }
 
 fn parse(input: &str) -> HashMap<(isize, isize), Material> {

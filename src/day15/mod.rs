@@ -3,7 +3,6 @@ type Point = (isize, isize);
 struct Sensor {
     pos: Point,
     range: usize,
-    f_range: f32,
     beacon_pos: Point,
 }
 
@@ -15,10 +14,6 @@ impl Sensor {
 
 fn manhattan_distance(p1: &Point, p2: &Point) -> usize {
     p1.0.abs_diff(p2.0) + p1.1.abs_diff(p2.1)
-}
-
-fn distance(p1: &Point, p2: &Point) -> f32 {
-    f32::hypot(p1.0.abs_diff(p2.0) as f32, p1.1.abs_diff(p2.1) as f32)
 }
 
 fn parse(input: &str) -> Vec<Sensor> {
@@ -35,7 +30,6 @@ fn parse(input: &str) -> Vec<Sensor> {
             Sensor {
                 pos: sensor,
                 range: manhattan_distance(&sensor, &beacon),
-                f_range: distance(&sensor, &beacon),
                 beacon_pos: beacon,
             }
         })
