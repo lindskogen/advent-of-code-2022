@@ -72,7 +72,7 @@ impl<'a> Network<'a> {
 
                 let id = words.next().unwrap();
 
-                let flow_rate: usize = words.skip(3).next().unwrap().parse().unwrap();
+                let flow_rate: usize = words.nth(3).unwrap().parse().unwrap();
 
                 let valves = if let Some((_, valves)) = second.split_once(" valves ") {
                     valves.split(", ").collect()
@@ -94,7 +94,7 @@ impl<'a> Network<'a> {
         let valve_indices = valves
             .iter()
             .enumerate()
-            .map(|(index, (&id, valve))| (id, index as u8))
+            .map(|(index, (&id, _))| (id, index as u8))
             .collect();
 
         Self {
