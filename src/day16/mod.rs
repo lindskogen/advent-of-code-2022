@@ -1,5 +1,5 @@
 use std::cell::RefCell;
-use std::collections::{BTreeSet, HashMap};
+use std::collections::HashMap;
 use std::hash::Hash;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -10,28 +10,31 @@ struct Valve<'a> {
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 struct State<'a> {
-    opened_valves: BTreeSet<&'a str>,
+    opened_valves: u64,
     position: &'a str,
     time_left: usize,
     number_others: usize,
 }
 
 impl<'a> State<'a> {
+    fn contains_valve(&self, valve_index: u8) -> bool {
+        (self.opened_valves & 1 << valve_index) > 0
+    }
+
     fn move_to(&self, pos: &'a str) -> Self {
         State {
-            opened_valves: self.opened_valves.clone(),
+            opened_valves: self.opened_valves,
             position: pos,
             time_left: self.time_left - 1,
             number_others: self.number_others,
         }
     }
 
-    fn open_valve(&self, valve: &'a str) -> Self {
-        let mut new_set = self.opened_valves.clone();
-        new_set.insert(valve);
+    fn open_valve(&self, valve_index: u8) -> Self {
+        let opened_valves = self.opened_valves | 1 << valve_index;
 
         State {
-            opened_valves: new_set,
+            opened_valves,
             position: self.position,
             time_left: self.time_left - 1,
             number_others: self.number_others,
@@ -40,7 +43,7 @@ impl<'a> State<'a> {
 
     fn next_player(&self) -> Self {
         State {
-            opened_valves: self.opened_valves.clone(),
+            opened_valves: self.opened_valves,
             position: "AA",
             time_left: 26,
             number_others: self.number_others - 1,
@@ -49,6 +52,7 @@ impl<'a> State<'a> {
 }
 
 struct Network<'a> {
+    valve_indices: HashMap<String, u8>,
     valves: HashMap<String, Valve<'a>>,
     table: RefCell<HashMap<State<'a>, usize>>,
 }
@@ -69,11 +73,13 @@ impl<'a> Network<'a> {
 
         let node = &self.valves[state.position];
 
-        let max_open = if !state.opened_valves.contains(&state.position) && node.flow_rate > 0 {
-            (state.time_left - 1) * node.flow_rate + self.recur(state.open_valve(&state.position))
-        } else {
-            0
-        };
+        let max_open =
+            if !state.contains_valve(self.valve_indices[state.position]) && node.flow_rate > 0 {
+                (state.time_left - 1) * node.flow_rate
+                    + self.recur(state.open_valve(self.valve_indices[state.position]))
+            } else {
+                0
+            };
 
         let max_move = node
             .neighbors
@@ -88,70 +94,69 @@ impl<'a> Network<'a> {
 
         best_value
     }
-}
 
-fn parse(input: &str) -> HashMap<String, Valve> {
-    input
-        .lines()
-        .map(|line| {
-            let (first, second) = line.split_once("; ").unwrap();
-            let mut words = first.split(&[' ', '=']).skip(1);
+    fn parse(input: &'a str) -> Self {
+        let valves: HashMap<_, _> = input
+            .lines()
+            .map(|line| {
+                let (first, second) = line.split_once("; ").unwrap();
+                let mut words = first.split(&[' ', '=']).skip(1);
 
-            let id = words.next().unwrap().to_string();
-            let flow_rate: usize = words.skip(3).next().unwrap().parse().unwrap();
+                let id = words.next().unwrap().to_string();
 
-            let valves = if let Some((_, valves)) = second.split_once(" valves ") {
-                valves.split(", ").collect()
-            } else {
-                let (_, valve) = second.split_once(" valve ").unwrap();
-                vec![valve]
-            };
+                let flow_rate: usize = words.skip(3).next().unwrap().parse().unwrap();
 
-            (
-                id,
-                Valve {
-                    flow_rate,
-                    neighbors: valves,
-                },
-            )
-        })
-        .collect()
+                let valves = if let Some((_, valves)) = second.split_once(" valves ") {
+                    valves.split(", ").collect()
+                } else {
+                    let (_, valve) = second.split_once(" valve ").unwrap();
+                    vec![valve]
+                };
+
+                (
+                    id,
+                    Valve {
+                        flow_rate,
+                        neighbors: valves,
+                    },
+                )
+            })
+            .collect();
+
+        let valve_indices = valves
+            .iter()
+            .enumerate()
+            .map(|(index, (id, valve))| (id.to_string(), index as u8))
+            .collect();
+
+        Network {
+            table: Default::default(),
+            valves,
+            valve_indices,
+        }
+    }
 }
 
 pub fn solve(input: &str) -> usize {
-    let valves = parse(input);
+    let n = Network::parse(input);
 
-    let n = Network {
-        table: Default::default(),
-        valves,
-    };
-
-    let res = n.recur(State {
-        opened_valves: Default::default(),
+    n.recur(State {
+        opened_valves: 0,
         time_left: 30,
         number_others: 0,
         position: "AA",
-    });
-
-    res
+    })
 }
 
 pub fn solve_2(input: &str) -> usize {
-    let valves = parse(input);
+    let n = Network::parse(input);
 
-    let n = Network {
-        table: Default::default(),
-        valves,
-    };
-
-    let res = n.recur(State {
-        opened_valves: Default::default(),
+    n.recur(State {
+        opened_valves: 0,
         time_left: 26,
         number_others: 1,
         position: "AA",
-    });
-
-    res
+    })
 }
 
 #[cfg(test)]
