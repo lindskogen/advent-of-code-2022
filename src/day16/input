@@ -1,25 +1,55 @@
-Sensor at x=1259754, y=1927417: closest beacon is at x=1174860, y=2000000
-Sensor at x=698360, y=2921616: closest beacon is at x=1174860, y=2000000
-Sensor at x=2800141, y=2204995: closest beacon is at x=3151616, y=2593677
-Sensor at x=3257632, y=2621890: closest beacon is at x=3336432, y=2638865
-Sensor at x=3162013, y=3094407: closest beacon is at x=3151616, y=2593677
-Sensor at x=748228, y=577603: closest beacon is at x=849414, y=-938539
-Sensor at x=3624150, y=2952930: closest beacon is at x=3336432, y=2638865
-Sensor at x=2961687, y=2430611: closest beacon is at x=3151616, y=2593677
-Sensor at x=142293, y=3387807: closest beacon is at x=45169, y=4226343
-Sensor at x=3309479, y=1598941: closest beacon is at x=3336432, y=2638865
-Sensor at x=1978235, y=3427616: closest beacon is at x=2381454, y=3683743
-Sensor at x=23389, y=1732536: closest beacon is at x=1174860, y=2000000
-Sensor at x=1223696, y=3954547: closest beacon is at x=2381454, y=3683743
-Sensor at x=3827517, y=3561118: closest beacon is at x=4094575, y=3915146
-Sensor at x=3027894, y=3644321: closest beacon is at x=2381454, y=3683743
-Sensor at x=3523333, y=3939956: closest beacon is at x=4094575, y=3915146
-Sensor at x=2661743, y=3988507: closest beacon is at x=2381454, y=3683743
-Sensor at x=2352285, y=2877820: closest beacon is at x=2381454, y=3683743
-Sensor at x=3214853, y=2572272: closest beacon is at x=3151616, y=2593677
-Sensor at x=3956852, y=2504216: closest beacon is at x=3336432, y=2638865
-Sensor at x=219724, y=3957089: closest beacon is at x=45169, y=4226343
-Sensor at x=1258233, y=2697879: closest beacon is at x=1174860, y=2000000
-Sensor at x=3091374, y=215069: closest beacon is at x=4240570, y=610698
-Sensor at x=3861053, y=889064: closest beacon is at x=4240570, y=610698
-Sensor at x=2085035, y=1733247: closest beacon is at x=1174860, y=2000000
+Valve OK has flow rate=0; tunnels lead to valves RW, FX
+Valve JY has flow rate=13; tunnel leads to valve TT
+Valve FX has flow rate=16; tunnels lead to valves OK, LF, GO, IV
+Valve TD has flow rate=0; tunnels lead to valves XZ, ED
+Valve VF has flow rate=9; tunnels lead to valves DS, LU, TR, WO
+Valve TT has flow rate=0; tunnels lead to valves XZ, JY
+Valve KR has flow rate=8; tunnels lead to valves VL, CI, GO, JJ, TQ
+Valve HN has flow rate=0; tunnels lead to valves YG, AA
+Valve MC has flow rate=24; tunnels lead to valves MI, EE, TH, YG
+Valve XM has flow rate=0; tunnels lead to valves AF, JL
+Valve XE has flow rate=0; tunnels lead to valves XP, AF
+Valve ZF has flow rate=0; tunnels lead to valves EM, EI
+Valve DS has flow rate=0; tunnels lead to valves VF, LF
+Valve AF has flow rate=7; tunnels lead to valves AW, XE, CI, BJ, XM
+Valve NL has flow rate=0; tunnels lead to valves KF, EM
+Valve LF has flow rate=0; tunnels lead to valves FX, DS
+Valve XZ has flow rate=25; tunnels lead to valves TD, TT
+Valve TQ has flow rate=0; tunnels lead to valves AA, KR
+Valve WO has flow rate=0; tunnels lead to valves VF, NE
+Valve TH has flow rate=0; tunnels lead to valves LU, MC
+Valve AA has flow rate=0; tunnels lead to valves TQ, KF, HN, XP, TY
+Valve KB has flow rate=0; tunnels lead to valves WP, XL
+Valve IV has flow rate=0; tunnels lead to valves PK, FX
+Valve MI has flow rate=0; tunnels lead to valves JF, MC
+Valve EX has flow rate=22; tunnels lead to valves JL, ZZ, SL
+Valve ZZ has flow rate=0; tunnels lead to valves EX, JS
+Valve KF has flow rate=0; tunnels lead to valves NL, AA
+Valve PK has flow rate=11; tunnels lead to valves IV, HP
+Valve TR has flow rate=0; tunnels lead to valves DI, VF
+Valve YG has flow rate=0; tunnels lead to valves HN, MC
+Valve JL has flow rate=0; tunnels lead to valves EX, XM
+Valve VL has flow rate=0; tunnels lead to valves JS, KR
+Valve XP has flow rate=0; tunnels lead to valves AA, XE
+Valve TY has flow rate=0; tunnels lead to valves JS, AA
+Valve EM has flow rate=4; tunnels lead to valves JJ, NL, ZF, WP, AW
+Valve BJ has flow rate=0; tunnels lead to valves WK, AF
+Valve JJ has flow rate=0; tunnels lead to valves EM, KR
+Valve RW has flow rate=14; tunnels lead to valves NE, OK
+Valve EI has flow rate=0; tunnels lead to valves ZF, JS
+Valve SL has flow rate=0; tunnels lead to valves HP, EX
+Valve EE has flow rate=0; tunnels lead to valves MC, XL
+Valve WK has flow rate=0; tunnels lead to valves BJ, JS
+Valve AW has flow rate=0; tunnels lead to valves EM, AF
+Valve XL has flow rate=21; tunnels lead to valves EE, KB
+Valve JF has flow rate=0; tunnels lead to valves MI, ED
+Valve LU has flow rate=0; tunnels lead to valves TH, VF
+Valve CI has flow rate=0; tunnels lead to valves AF, KR
+Valve ED has flow rate=23; tunnels lead to valves JF, TD
+Valve JS has flow rate=3; tunnels lead to valves VL, ZZ, EI, TY, WK
+Valve NE has flow rate=0; tunnels lead to valves RW, WO
+Valve DI has flow rate=12; tunnel leads to valve TR
+Valve WP has flow rate=0; tunnels lead to valves KB, EM
+Valve GO has flow rate=0; tunnels lead to valves FX, KR
+Valve HP has flow rate=0; tunnels lead to valves SL, PK
+
