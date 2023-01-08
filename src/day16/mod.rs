@@ -1,5 +1,4 @@
-use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::hash::Hash;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -8,7 +7,7 @@ struct Valve<'a> {
     neighbors: Vec<&'a str>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 struct State<'a> {
     opened_valves: u64,
     position: &'a str,
@@ -49,60 +48,29 @@ impl<'a> State<'a> {
             number_others: self.number_others - 1,
         }
     }
+
+    fn key(&self, valve_indices: &HashMap<&str, u8>) -> usize {
+        self.opened_valves as usize * valve_indices.len() * 31 * 2
+            + valve_indices[self.position] as usize * 31 * 2
+            + self.time_left * 2
+            + self.number_others
+    }
 }
 
 struct Network<'a> {
-    valve_indices: HashMap<String, u8>,
-    valves: HashMap<String, Valve<'a>>,
-    table: RefCell<HashMap<State<'a>, usize>>,
+    valve_indices: HashMap<&'a str, u8>,
+    valves: HashMap<&'a str, Valve<'a>>,
 }
 
-impl<'a> Network<'a> {
-    fn recur(&self, state: State<'a>) -> usize {
-        if state.time_left == 0 {
-            return if state.number_others > 0 {
-                self.recur(state.next_player())
-            } else {
-                0
-            };
-        }
-
-        if let Some(&res) = self.table.borrow().get(&state) {
-            return res;
-        }
-
-        let node = &self.valves[state.position];
-
-        let max_open =
-            if !state.contains_valve(self.valve_indices[state.position]) && node.flow_rate > 0 {
-                (state.time_left - 1) * node.flow_rate
-                    + self.recur(state.open_valve(self.valve_indices[state.position]))
-            } else {
-                0
-            };
-
-        let max_move = node
-            .neighbors
-            .iter()
-            .map(|n| self.recur(state.move_to(n)))
-            .max()
-            .unwrap();
-
-        let best_value = max_open.max(max_move);
-
-        self.table.borrow_mut().insert(state, best_value);
-
-        best_value
-    }
-
-    fn parse(input: &'a str) -> Self {
+impl Network<'_> {
+    fn parse(input: &str) -> Self {
         let valves: HashMap<_, _> = input
             .lines()
             .map(|line| {
                 let (first, second) = line.split_once("; ").unwrap();
                 let mut words = first.split(&[' ', '=']).skip(1);
 
-                let id = words.next().unwrap().to_string();
+                let id = words.next().unwrap();
 
                 let flow_rate: usize = words.skip(3).next().unwrap().parse().unwrap();
 
@@ -126,37 +94,91 @@ impl<'a> Network<'a> {
         let valve_indices = valves
             .iter()
             .enumerate()
-            .map(|(index, (id, valve))| (id.to_string(), index as u8))
+            .map(|(index, (&id, valve))| (id, index as u8))
             .collect();
 
-        Network {
-            table: Default::default(),
+        Self {
             valves,
             valve_indices,
         }
     }
 }
 
+#[derive(Default)]
+struct Solution {
+    table: BTreeMap<usize, usize>,
+}
+
+impl Solution {
+    fn recur(&mut self, network: &Network, state: State) -> usize {
+        if state.time_left == 0 {
+            return if state.number_others > 0 {
+                self.recur(network, state.next_player())
+            } else {
+                0
+            };
+        }
+
+        let key = state.key(&network.valve_indices);
+
+        if let Some(&res) = self.table.get(&key) {
+            return res;
+        }
+
+        let node = &network.valves[state.position];
+
+        let max_open =
+            if !state.contains_valve(network.valve_indices[state.position]) && node.flow_rate > 0 {
+                (state.time_left - 1) * node.flow_rate
+                    + self.recur(
+                        network,
+                        state.open_valve(network.valve_indices[state.position]),
+                    )
+            } else {
+                0
+            };
+
+        let max_move = node
+            .neighbors
+            .iter()
+            .map(|n| self.recur(network, state.move_to(n)))
+            .max()
+            .unwrap();
+
+        let best_value = max_open.max(max_move);
+
+        self.table.insert(key, best_value);
+
+        best_value
+    }
+}
+
 pub fn solve(input: &str) -> usize {
     let n = Network::parse(input);
 
-    n.recur(State {
-        opened_valves: 0,
-        time_left: 30,
-        number_others: 0,
-        position: "AA",
-    })
+    Solution::default().recur(
+        &n,
+        State {
+            opened_valves: 0,
+            time_left: 30,
+            number_others: 0,
+            position: "AA",
+        },
+    )
 }
 
 pub fn solve_2(input: &str) -> usize {
     let n = Network::parse(input);
 
-    n.recur(State {
-        opened_valves: 0,
-        time_left: 26,
-        number_others: 1,
-        position: "AA",
-    })
+    Solution::default().recur(
+        &n,
+        State {
+            opened_valves: 0,
+            time_left: 26,
+            number_others: 1,
+            position: "AA",
+        },
+    )
 }
 
 #[cfg(test)]
