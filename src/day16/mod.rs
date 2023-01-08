@@ -62,8 +62,8 @@ struct Network<'a> {
     valves: HashMap<&'a str, Valve<'a>>,
 }
 
-impl Network<'_> {
-    fn parse(input: &str) -> Self {
+impl<'a> Network<'a> {
+    fn parse(input: &'a str) -> Self {
         let valves: HashMap<_, _> = input
             .lines()
             .map(|line| {
