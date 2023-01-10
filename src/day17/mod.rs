@@ -1,7 +1,6 @@
-use std::collections::HashSet;
-use std::iter::Cycle;
-use std::slice::Iter;
+use std::collections::{HashMap, HashSet};
 
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 enum Piece {
     HorizontalBeam,
     Plus,
@@ -10,10 +9,9 @@ enum Piece {
     Square,
 }
 
-type Position = (usize, isize);
+type Coord = (usize, usize);
 
-const MIN_X: usize = 1;
-const MAX_X: usize = 7;
+const WIDTH: usize = 7;
 
 const PIECES: [Piece; 5] = [
     Piece::HorizontalBeam,
@@ -24,11 +22,7 @@ const PIECES: [Piece; 5] = [
 ];
 
 impl Piece {
-    fn cycle() -> Cycle<Iter<'static, Piece>> {
-        PIECES.iter().cycle()
-    }
-
-    fn positions(&self, (x, y): Position) -> Vec<Position> {
+    fn positions(&self, (x, y): Coord) -> Vec<Coord> {
         match self {
             Piece::HorizontalBeam => vec![(x, y), (x + 1, y), (x + 2, y), (x + 3, y)],
             Piece::Plus => vec![(x, y + 1), (x + 1, y), (x + 2, y + 1), (x + 1, y + 2)],
@@ -45,121 +39,98 @@ impl Piece {
     }
 }
 
-fn print_grid(grid: &HashSet<Position>, highest_y: isize, piece: Option<Vec<Position>>) {
-    let max_y = if let Some(ref positions) = &piece {
-        positions
-            .iter()
-            .map(|&p| p.1)
-            .max()
-            .unwrap_or(0)
-            .max(highest_y)
-    } else {
-        highest_y
-    };
-
-    for y in (0..=max_y).rev() {
-        for x in MIN_X..=MAX_X {
-            if piece.as_ref().map(|p| p.contains(&(x, y))).unwrap_or(false) {
-                print!("@")
-            } else if grid.contains(&(x, y)) {
-                print!("#")
-            } else {
-                print!(".")
-            }
-        }
-        println!()
-    }
-
-    println!();
-    println!();
+fn is_valid(pos: &Coord, piece: &Piece, grid: &HashSet<(usize, usize)>) -> bool {
+    piece
+        .positions(*pos)
+        .iter()
+        .all(|p @ (x, _)| *x < WIDTH && !grid.contains(p))
 }
 
-fn simulate_rocks(input: &str, steps: usize) -> isize {
-    let mut highest_y = -1isize;
-    let mut max_ys = [0isize; 7];
+fn simulate_rocks(input: &str, steps: usize) -> usize {
+    let mut cache = HashMap::new();
+    let mut y_height = 0usize;
+    let mut offset = 0usize;
 
-    let mut grid: HashSet<Position> = Default::default();
-    let mut moves = input.chars().cycle();
+    let mut grid = HashSet::new();
+    let moves: Vec<_> = input.chars().collect();
 
-    for piece in Piece::cycle().take(steps) {
+    let mut piece_count = 0usize;
+    let mut wind_count = 0usize;
+
+    while piece_count < steps {
+        let piece = PIECES[piece_count % PIECES.len()];
         // put piece at left=2, bottom=3
 
-        let mut pos = {
-            let x = MIN_X + 2;
-            let y = highest_y + 4;
-            (x, y)
-        };
-
-        // print_grid(&grid, highest_y, Some(piece.positions(pos)));
+        let mut pos: Coord = (2, y_height + 3);
 
         loop {
             // wind move
+            let wind_move = moves[wind_count % moves.len()];
 
-            let next_pos = match moves.next().unwrap() {
+            let next_pos = match wind_move {
                 '>' => (pos.0 + 1, pos.1),
-                '<' => (pos.0 - 1, pos.1),
+                '<' => (pos.0.saturating_sub(1), pos.1),
                 _ => unreachable!(),
             };
 
-            if !piece
-                .positions(next_pos)
-                .iter()
-                .any(|p| p.0 < MIN_X || p.0 > MAX_X || grid.contains(p))
-            {
+            if is_valid(&next_pos, &piece, &grid) {
                 // no collisions, update pos!
                 pos = next_pos;
+            }
 
-                // print_grid(&grid, highest_y, Some(piece.positions(next_pos)))
-            };
+            wind_count += 1;
 
             // move down
-            let next_pos = (pos.0, pos.1 - 1);
+            let next_pos = (pos.0, pos.1.saturating_sub(1));
 
-            let next_positions = piece.positions(next_pos);
-
-            if next_positions.iter().any(|p| grid.contains(p)) || next_pos.1 < 0 {
+            if pos.1 == 0 || !is_valid(&next_pos, &piece, &grid) {
                 // collide with piece below -> rest at pos!
-                let positions = piece.positions(pos);
-                let prev_y = highest_y;
-
-                highest_y = positions
-                    .iter()
-                    .map(|(_, y)| *y)
-                    .max()
-                    .unwrap()
-                    .max(highest_y);
-
-                for (x, y) in positions {
-                    max_ys[x] = max_ys[x].max(y);
-                }
-
-                ys.push(highest_y - prev_y);
-
-                grid.extend(positions);
                 break;
-                //  print_grid(&grid, highest_y, None);
-            } else {
-                // no collision, update pos!
-                pos = next_pos;
-                //  print_grid(&grid, highest_y, Some(piece.positions(next_pos)))
             }
+            // no collision, update pos!
+            pos = next_pos;
         }
+
+        let positions = piece.positions(pos);
+        for (_, y) in &positions {
+            y_height = y_height.max(y + 1);
+        }
+        grid.extend(positions);
+
+        if offset == 0 {
+            let key = (piece_count % PIECES.len(), wind_count % moves.len());
+
+            if let Some((2, old_count, old_height)) = cache.get(&key) {
+                let delta_top = y_height - old_height;
+                let delta_count = piece_count - old_count;
+                let repeats = (steps - piece_count) / delta_count;
+                offset += repeats * delta_top;
+                piece_count += repeats * delta_count;
+            }
+
+            cache
+                .entry(key)
+                .and_modify(|(n, old_count, old_height)| {
+                    *n += 1;
+                    *old_count = piece_count;
+                    *old_height = y_height;
+                })
+                .or_insert((1usize, piece_count, y_height));
+        }
+
+        piece_count += 1;
     }
 
-    // print_grid(&grid, highest_y, None);
-
-    println!("{:?}", ys);
-
-    highest_y + 1
+    y_height + offset
 }
 
-pub fn solve(input: &str) -> isize {
+pub fn solve(input: &str) -> usize {
     simulate_rocks(input, 2022)
 }
 
-pub fn solve_2(input: &str) -> isize {
+pub fn solve_2(input: &str) -> usize {
     // let steps = 1000000000000;
-    simulate_rocks(input, 10000)
+    simulate_rocks(input, 1000000000000)
 }
 
 #[cfg(test)]
@@ -188,20 +159,20 @@ mod tests {
 
     #[bench]
     fn bench_part_1(b: &mut Bencher) {
-        let lines = read_file_to_string("src/day16/input");
+        let lines = read_file_to_string("src/day17/input");
         b.iter(|| {
             let p1 = solve(lines.trim_end());
-            assert_eq!(p1, 1991);
+            assert_eq!(p1, 3177);
         })
     }
 
     #[bench]
     fn bench_part_2(b: &mut Bencher) {
-        let lines = read_file_to_string("src/day16/input");
+        let lines = read_file_to_string("src/day17/input");
 
         b.iter(|| {
             let res = solve_2(&lines.trim_end());
-            assert_eq!(res, 2705);
+            assert_eq!(res, 1565517241382);
         })
     }
 
@@ -216,9 +187,9 @@ mod tests {
 
     #[test]
     fn it_works_2() {
-        let lines = read_file_to_string("src/day16/input");
+        let lines = read_file_to_string("src/day17/input");
         let res = solve_2(&lines.trim_end());
 
-        assert_eq!(res, 2705);
+        assert_eq!(res, 1565517241382);
     }
 }
